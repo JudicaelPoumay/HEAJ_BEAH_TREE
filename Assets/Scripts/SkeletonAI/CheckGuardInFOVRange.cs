@@ -4,15 +4,15 @@ using UnityEngine;
 
 using BehaviorTree;
 
-public class CheckEnemyInFOVRange : Node
+public class CheckGuardInFOVRange : Node
 {
-    private static int _enemyLayerMask = 1 << LayerMask.NameToLayer("Enemy");
+    private static int _guardLayerMask = 1 << LayerMask.NameToLayer("Guard");
 
     private Transform _transform;
     private Animator _animator;
     private float _fovRange;
 
-    public CheckEnemyInFOVRange(Transform transform, float fovRange)
+    public CheckGuardInFOVRange(Transform transform, float fovRange)
     {
         _transform = transform;
         _animator = transform.GetComponent<Animator>();
@@ -25,7 +25,7 @@ public class CheckEnemyInFOVRange : Node
         if (t == null)
         {
             Collider[] colliders = Physics.OverlapSphere(
-                _transform.position, _fovRange, _enemyLayerMask);
+                _transform.position, _fovRange, _guardLayerMask);
 
             if (colliders.Length > 0)
             {

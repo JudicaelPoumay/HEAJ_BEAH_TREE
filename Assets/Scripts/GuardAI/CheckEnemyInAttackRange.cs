@@ -8,11 +8,13 @@ public class CheckEnemyInAttackRange : Node
 {
     private Transform _transform;
     private Animator _animator;
+    private float _attackRange;
 
-    public CheckEnemyInAttackRange(Transform transform)
+    public CheckEnemyInAttackRange(Transform transform, float attackRange)
     {
         _transform = transform;
         _animator = transform.GetComponent<Animator>();
+        _attackRange = attackRange;
     }
 
     public override NodeState Evaluate()
@@ -25,7 +27,7 @@ public class CheckEnemyInAttackRange : Node
         }
 
         Transform target = (Transform)t;
-        if (Vector3.Distance(_transform.position, target.position) <= GuardBT.attackRange)
+        if (Vector3.Distance(_transform.position, target.position) <= _attackRange)
         {
             _animator.SetBool("Attacking", true);
             _animator.SetBool("Walking", false);

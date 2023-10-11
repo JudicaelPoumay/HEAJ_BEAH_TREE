@@ -12,7 +12,7 @@ public class TaskAttack : Node
     private EnemyManager _enemyManager;
 
     private float _attackTime = 1f;
-    private float _attackCounter = 0f;
+    private float _attackCounter = 0.5f;
 
     public TaskAttack(Transform transform)
     {

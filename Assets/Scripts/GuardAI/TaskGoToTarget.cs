@@ -7,10 +7,12 @@ using BehaviorTree;
 public class TaskGoToTarget : Node
 {
     private Transform _transform;
+    private float _speed;
 
-    public TaskGoToTarget(Transform transform)
+    public TaskGoToTarget(Transform transform, float speed)
     {
         _transform = transform;
+        _speed = speed;
     }
 
     public override NodeState Evaluate()
@@ -20,7 +22,7 @@ public class TaskGoToTarget : Node
         if (Vector3.Distance(_transform.position, target.position) > 0.01f)
         {
             _transform.position = Vector3.MoveTowards(
-                _transform.position, target.position, GuardBT.speed * Time.deltaTime);
+                _transform.position, target.position, _speed * Time.deltaTime);
             _transform.LookAt(target.position);
         }
 

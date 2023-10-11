@@ -4,11 +4,12 @@ using UnityEngine;
 
 using BehaviorTree;
 
-public class TaskPatrol : Node
+public class TaskPatrol2 : Node
 {
     private Transform _transform;
     private Animator _animator;
     private Transform[] _waypoints;
+    private float _speed;
 
     private int _currentWaypointIndex = 0;
 
@@ -16,11 +17,12 @@ public class TaskPatrol : Node
     private float _waitCounter = 0f;
     private bool _waiting = false;
 
-    public TaskPatrol(Transform transform, Transform[] waypoints)
+    public TaskPatrol2(Transform transform, Transform[] waypoints, float speed)
     {
         _transform = transform;
         _animator = transform.GetComponent<Animator>();
         _waypoints = waypoints;
+        _speed = speed;
     }
 
     public override NodeState Evaluate()
@@ -48,7 +50,7 @@ public class TaskPatrol : Node
             }
             else
             {
-                _transform.position = Vector3.MoveTowards(_transform.position, wp.position, GuardBT.speed * Time.deltaTime);
+                _transform.position = Vector3.MoveTowards(_transform.position, wp.position, _speed * Time.deltaTime);
                 _transform.LookAt(wp.position);
             }
         }
