@@ -27,10 +27,15 @@ namespace BehaviorTree
                 }
             }
             
-			foreach(Node child in children)
-				child.Reset();
+			Reset();
             return NodeState.FAILURE;
         }
+
+		public override void Reset()
+		{
+			foreach(Node child in children)
+				child.Reset();
+		}
     }
 
 }

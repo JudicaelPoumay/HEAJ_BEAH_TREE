@@ -19,6 +19,8 @@ public class TaskPatrol1 : BehaviorTree.Node
 
 	public override BehaviorTree.NodeState Evaluate()
 	{
+		if(_currentWayPointIdx == _waypoints.Length)
+			return BehaviorTree.NodeState.SUCCESS;
 		Transform wp = _waypoints[_currentWayPointIdx];
 		if(Vector3.Distance(_transform.position, wp.position) < 0.01f)
 		{
