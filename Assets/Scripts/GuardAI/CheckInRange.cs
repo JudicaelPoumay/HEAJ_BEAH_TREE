@@ -1,10 +1,10 @@
 using System.Collections;
 using System.Collections.Generic;
-using TMPro.EditorUtilities;
 using UnityEngine;
 
 public class CheckInRange : BehaviorTree.Node
 {
+    
     private Transform _transform;
     private Transform _target;
     private Animator _animator;
@@ -19,11 +19,13 @@ public class CheckInRange : BehaviorTree.Node
         if (GetData("Target") != null)
         {
             _target = (Transform)GetData("Target");
-            if(_target == null) {
+            if (_target == null)
+            {
+                _animator.SetBool("Attacking", false);
                 ClearData("Target");
                 return BehaviorTree.NodeState.FAILURE;
             }
-            if (Vector3.Distance(_transform.position, _target.position) < 1f)
+            if (Vector3.Distance(_transform.position, _target.position) < 1.5f)
             {
                 _animator.SetBool("Walking", false);
                 Debug.Log("inRange");

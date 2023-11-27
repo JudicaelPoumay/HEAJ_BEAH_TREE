@@ -1,20 +1,17 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.AI;
 using UnityEngine.UIElements;
 
 public class TaskAttack : BehaviorTree.Node
 {
     private Animator _animator;
-    private TaskDamage takeDamage;
-    private float waitTime = 1f;
-    private float waitCounter = 0f;
-    private bool waiting = false;
+    private TakeDamage _takeDamage;
+    private float _waitTime = 1f;
+    private float _waitCounter = 0f;
+    private bool _waiting = false;
     private Transform _target;
-    private int damage = 10;
-
-    NavMeshAgent agentToDealDamage;
+    private int _Damage = 10;
 
     public TaskAttack(Transform transform)
     {
@@ -24,35 +21,38 @@ public class TaskAttack : BehaviorTree.Node
 
     public override BehaviorTree.NodeState Evaluate()
     {
-        if (waiting)
+        if (_waiting)
         {
-            waitCounter += Time.deltaTime;
-            if (waitCounter >= waitTime)
+            _waitCounter += Time.deltaTime;
+            if (_waitCounter >= _waitTime)
             {
-                waiting = false;
+                _waiting = false;
                 
             }
         }
         else
         {
             _target = (Transform)GetData("Target");
-            if(_target == null ){
+            if (_target == null )
+            {
                 ClearData("Target");
+                _animator.SetBool("Attacking", false);
                 return BehaviorTree.NodeState.FAILURE;
             }
-            takeDamage = _target.transform.GetComponent<TaskDamage>();
-            if (takeDamage.TakeHit(damage, _target))
+            _takeDamage = _target.transform.GetComponent<TakeDamage>();
+            if (_takeDamage.takeHit(_Damage))
             {
-                Debug.Log("Attack");
                 _animator.SetBool("Attacking", true);
-                waiting = true;
-                waitCounter = 0f;
+                _waiting = true;
+                _waitCounter = 0f;
             }
             else
             {
                 _animator.SetBool("Attacking", false);
                 ClearData("Target");
             }
+           
+            
         }
         return BehaviorTree.NodeState.SUCCESS;
         

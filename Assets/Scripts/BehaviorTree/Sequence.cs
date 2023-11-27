@@ -26,11 +26,11 @@ namespace BehaviorTree
 				}
 			}
 
-			_Reset();
+			Reset();
 			return NodeState.SUCCESS;
 		}
 
-		public void _Reset()
+		public override void Reset()
 		{
 			foreach(Node child in children)
 				child.Reset();
