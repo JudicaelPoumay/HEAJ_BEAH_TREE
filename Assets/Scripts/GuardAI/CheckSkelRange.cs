@@ -19,7 +19,7 @@ public class CheckSkelRange : BehaviorTree.Node
         Collider[] colliders = Physics.OverlapSphere(_transform.position, _fovRange, _enemyLayerMask);
         if (colliders.Length > 0 )
         {
-            SetData("Target", colliders[0].transform);
+            SetData("TargetGuard", colliders[0].transform);
             return BehaviorTree.NodeState.SUCCESS;
         }
         return BehaviorTree.NodeState.FAILURE;

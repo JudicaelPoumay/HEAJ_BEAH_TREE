@@ -71,6 +71,8 @@ namespace BehaviorTree
             return null;
         }
 
+
+
         public bool ClearData(string key)
         {
             if(_dataContext.ContainsKey(key))

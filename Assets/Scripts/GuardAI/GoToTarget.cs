@@ -6,34 +6,40 @@ using UnityEngine.AI;
 public class GoToTarget : BehaviorTree.Node
 {
     
+    private float _speed;
     private Transform _transform;
     private Transform _target;
     private Animator _animator;
-    private NavMeshAgent _agent;
+    private NavMeshAgent agent;
+
     
 
-    public GoToTarget(Transform transform, NavMeshAgent agent)
+    public GoToTarget(NavMeshAgent agent, float speed)
     {
-        _animator = transform.GetComponent<Animator>();
-        _transform = transform;
-        _agent = agent;
+        _animator = agent.transform.GetComponent<Animator>();
+        _speed = speed;
+        _transform = agent.transform;
+        this.agent = agent;
     }
     public override BehaviorTree.NodeState Evaluate()
     {
+        agent.speed = _speed;
 
         if (GetData("Target") != null)
         {
-            Debug.Log("movetotarget");
             _target = (Transform)GetData("Target");
-            if (Vector3.Distance(_transform.position, _target.position) < 0.01f)
+            if(_target == null) {
+                ClearData("Target");
+                return BehaviorTree.NodeState.FAILURE;
+            }
+            if (Vector3.Distance(_transform.position, _target.position) < 0.5f)
             {
                 _transform.position = _target.position;
                 _animator.SetBool("Walking", false);
             }
             else
             {
-                Debug.Log("movetotarget");
-                _agent.SetDestination(_target.position);
+                agent.SetDestination(_target.position);
                 _transform.LookAt(_target.position);
                 _animator.SetBool("Walking", true);
             }

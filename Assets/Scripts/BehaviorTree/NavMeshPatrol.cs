@@ -21,7 +21,9 @@ public class NavMeshPatrol : Node
 
     public override BehaviorTree.NodeState Evaluate()
 	{
-        Debug.Log("Current waypoint index : " + _currentWayPointIdx);
+        agent.speed = speed;
+
+        //Debug.Log("Current waypoint index : " + _currentWayPointIdx);
 		if(_currentWayPointIdx == waypoints.Length)
 			return BehaviorTree.NodeState.SUCCESS;
 		Transform wp = waypoints[_currentWayPointIdx];
@@ -32,7 +34,6 @@ public class NavMeshPatrol : Node
         }
         else
         {
-            agent.speed = speed;
             agent.SetDestination(wp.position);
         }
 

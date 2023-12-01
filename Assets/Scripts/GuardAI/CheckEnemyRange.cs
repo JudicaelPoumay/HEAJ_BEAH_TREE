@@ -19,10 +19,10 @@ public class CheckEnemyRange : BehaviorTree.Node
         Collider[] colliders = Physics.OverlapSphere(_transform.position, _fovRange,_enemyLayerMarck);
         if (colliders.Length > 0 )
         {
-            Debug.Log("Fond");
             SetData("Target", colliders[0].transform);
             return BehaviorTree.NodeState.SUCCESS;
         }
         return BehaviorTree.NodeState.FAILURE;
-    }   
+    }
+     
 }

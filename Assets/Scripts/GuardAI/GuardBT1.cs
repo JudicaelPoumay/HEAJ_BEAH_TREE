@@ -1,30 +1,18 @@
 using System.Collections;
 using System.Collections.Generic;
 using BehaviorTree;
-using Unity.PlasticSCM.Editor.WebApi;
 using UnityEngine;
 using UnityEngine.AI;
+using Tree = BehaviorTree.Tree;
 
-public class GuardBT1 : BehaviorTree.Tree
+public class GuardBT1 : Tree
 {
 	public UnityEngine.Transform[] waypoints1;
-	public UnityEngine.Transform[] waypoints2;
+	public float speed = 6f;
 	public float fovRange = 2f;
 	public NavMeshAgent agent;
 
-    private float _slowTimeCounter;
-    private float _slowSpeedTime = 2f;
-
-    private float _normalSpeed;
-    private float _slowedSpeed;
-
-
-    public void Start()
-    {
-        base.Start();
-        _normalSpeed = agent.speed;
-    }
-    protected override Node SetupTree()
+	protected override Node SetupTree()
 	{
 		Node root = new Selector(new List<Node>
 		{
@@ -36,31 +24,40 @@ public class GuardBT1 : BehaviorTree.Tree
             new Sequence(new List<Node>
 			{
 				new CheckEnemyRange(transform, fovRange),
-				new GoToTarget(transform, agent)
+				new GoToTarget(agent, speed),
 			}),
-
-            new TaskPatrol2(transform, waypoints1, agent),
+			new Sequence(new List<Node>
+			{
+				new NavMeshPatrol(agent, waypoints1, speed),
+			}),
             
          });
-		 
-		
 
 		return root;
 	}
 
-    private void Update()
-    {
-        base.Update();
-        if (_slowTimeCounter <= 0f)
-            agent.speed = _normalSpeed;
-        else _slowTimeCounter -= Time.deltaTime;
+    private void Update() {
+		base.Update();
+        agent.speed = speed;
     }
 
-    public void slowSpeed()
-    {
-        _normalSpeed = agent.speed;
-        _slowedSpeed = agent.speed/2;
-        agent.speed = _slowedSpeed;
-        _slowTimeCounter = 2;
+    private void OnDrawGizmos() {
+        Gizmos.DrawWireSphere(transform.position, fovRange);
     }
+
+	public void ReduceSpeed(float percent, float time) {
+		StartCoroutine(ReduceSpeedCoroutine(percent, time));
+	}
+
+	public IEnumerator ReduceSpeedCoroutine(float percent, float time) {
+		float tempSpeed = speed;
+
+		speed = speed * percent;
+
+		//Debug.Log("Reduced guard speed");
+
+		yield return new WaitForSeconds(tempSpeed);
+
+		speed = tempSpeed;
+	}
 }

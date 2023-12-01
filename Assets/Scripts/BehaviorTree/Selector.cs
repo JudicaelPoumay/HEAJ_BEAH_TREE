@@ -19,7 +19,6 @@ namespace BehaviorTree
                     case NodeState.FAILURE:
                         continue;
                     case NodeState.SUCCESS:
-                        Reset();
                         return NodeState.SUCCESS;
                     case NodeState.RUNNING:
                         return NodeState.RUNNING;

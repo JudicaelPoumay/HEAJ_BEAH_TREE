@@ -20,16 +20,16 @@ public class TaskAvoid : Node
     public override BehaviorTree.NodeState Evaluate()
     {
 
-        if (GetData("Target") != null)
+        if (GetData("TargetGuard") != null)
         {
-            _target = (Transform)GetData("Target");
+            _target = (Transform)GetData("TargetGuard");
             if(_target == null) {
-                ClearData("Target");
+                ClearData("TargetGuard");
                 return BehaviorTree.NodeState.FAILURE;
             }
             else
             {
-                Debug.Log("ESCAPE CODE REACHED");
+                //Debug.Log("ESCAPE CODE REACHED");
                 agent.speed = _speed;
                 newDestination = (agent.transform.position - _target.position).normalized * 15;
                 agent.SetDestination(newDestination);

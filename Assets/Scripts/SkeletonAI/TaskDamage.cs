@@ -1,24 +1,27 @@
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 using UnityEngine.AI;
 using UnityEngine.Windows;
 
 public class TaskDamage : MonoBehaviour
 {
-    private float _health = 30;
-    bool oneTimeBool = false;
+    public TextMeshPro lifeText;
+
+    public float health = 30;
+    public bool oneTimeBool = false;
     public bool TakeHit(float damage, Transform transform)
     {
-        if(_health > 0)
+        if(health > 0)
         {
-            _health = _health - damage;
-            Debug.Log("Enemy life : " + _health);
-            StartCoroutine(FreezeOnHit());
+            health = health - damage;
+            //Debug.Log("Enemy life : " + _health);
+            //StartCoroutine(FreezeOnHit());
             return true;
         }
         
-        if(_health <= 0 && !oneTimeBool)
+        if(health <= 0 && !oneTimeBool)
         {
             oneTimeBool = true;
 
@@ -28,11 +31,17 @@ public class TaskDamage : MonoBehaviour
             transform.eulerAngles = new Vector3(90f, 0, 0);
             transform.GetComponent<BoxCollider>().enabled = false;
 
+            Debug.Log("Skel is dead");
+
             Invoke("DestroyAfterTime", 5f);
             return false;
         }
 
         return false; 
+    }
+
+    private void Update() {
+        lifeText.text = health.ToString();
     }
 
     private void DestroyAfterTime() {

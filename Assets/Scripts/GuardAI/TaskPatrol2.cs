@@ -1,14 +1,13 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.AI;
 
 public class TaskPatrol2 : BehaviorTree.Node
 {
 	private Transform _transform;
 	private Animator _animator;
 	private Transform[] _waypoints;
-	private NavMeshAgent _agent;
+	private float _speed;
 
 	private int _currentWayPointIdx = 0;
 
@@ -16,12 +15,12 @@ public class TaskPatrol2 : BehaviorTree.Node
 	private float _waitCounter = 0f;
 	private bool _waiting = false;
 
-	public TaskPatrol2(Transform transform, Transform[] waypoints, NavMeshAgent agent)
+	public TaskPatrol2(Transform transform, Transform[] waypoints, float speed)
 	{
 		_transform = transform;
 		_animator = transform.GetComponent<Animator>();
 		_waypoints = waypoints;
-		_agent = agent;
+		_speed = speed;
 	}
 
 	public override BehaviorTree.NodeState Evaluate()
@@ -40,7 +39,7 @@ public class TaskPatrol2 : BehaviorTree.Node
 		else
 		{
 			Transform wp = _waypoints[_currentWayPointIdx];
-			if(Vector3.Distance(_transform.position, wp.position) < 0.1f)
+			if(Vector3.Distance(_transform.position, wp.position) < 0.01f)
 			{
 				_transform.position = wp.position;
 				_waitCounter = 0f;
@@ -51,7 +50,8 @@ public class TaskPatrol2 : BehaviorTree.Node
 			}
 			else
 			{
-				_agent.SetDestination(wp.position);
+				_transform.position = Vector3.MoveTowards(_transform.position, wp.position, _speed*Time.deltaTime);
+				_transform.LookAt(wp.position);
 			}
 		}
 
