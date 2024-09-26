@@ -30,12 +30,16 @@ public class SkelBT2 : Tree
                         new Sequence(new List<Node> {
                             new CheckTrap(this),            
                             new TaskAvoid(agent, 7f),                         
-                            new DropObject(this, trapObj, 2f, trapCount),     
+                            new WaitNode(
+                                new LoopNode(
+                                    new DropObject(this, trapObj, 2f, trapCount)
+                                ,2),
+                            ,2f),     
                         }),
                         new Sequence(new List<Node> {
                             new NavMeshAtoB(agent, "TargetGuard", speed),           
                             new CheckRange(transform, targetDataName:"TargetGuard", attackRadius, returnDataName:"TargetGuard"),
-                            new TaskAttack("TargetGuard", 2),                       
+                            new WaitNode(new TaskAttack("TargetGuard", 2),1f),                       
                         })
                     }),
                 }),

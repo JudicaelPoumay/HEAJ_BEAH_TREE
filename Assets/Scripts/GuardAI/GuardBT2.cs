@@ -26,28 +26,8 @@ public class GuardBT2 : Tree
 	{
 		Node root = new Selector(new List<Node>
 		{
-			new Selector(new List<Node> {
-				new Sequence(new List<Node> {
-					new CheckBool(this, "hasCrate", false, ""),
-					new CheckRange(transform, skel.transform, attackRadius, returnDataName:"SkelInRange"),
-					new TaskAttack("SkelInRange", 15),
-				}),
-				new Sequence(new List<Node> {
-					new CheckBool(this, "hasCrate", false, ""),
-					new CheckRange(transform, skel.transform, fovRange, "Target"),
-					new NavMeshAtoB(agent, skel.transform, speed),
-				}),
-			}),
-			new Sequence(new List<Node> {
-				new CheckBool(this, "hasCrate", false, ""),
-				new Selector(new List<Node> {
-					new CheckBool(this, "hasSelectedCrate", true, ""),
-					new SelectRandomObject(allCrates.ToList(), this),
-				}),
-				new NavMeshAtoB(agent, this, speed, cratePickupRange, ""),
-				new PickupObject(this),
-				new DebugNode("Crate picked up"),
-			}),
+			new Attack(transform, skel,  mainTree, attackRadius, fovRange, speed, agent),
+			new Crate(mainTree, allCrates, speed, agent, cratePickupRange),
 			new NavMeshPatrol(agent, waypoints1, speed)
 		 });
 

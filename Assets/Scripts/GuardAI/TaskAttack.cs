@@ -30,37 +30,23 @@ public class TaskAttack : BehaviorTree.Node
 
     public override BehaviorTree.NodeState Evaluate()
     {
-        if (waiting)
+        target = (Transform)GetData(whoToAttack);
+        if(target == null ){
+            return BehaviorTree.NodeState.FAILURE;
+        }
+        takeDamage = target.transform.GetComponent<TaskDamage>();
+        if (takeDamage.TakeHit(damage, target))
         {
-            waitCounter += Time.deltaTime;
-            if (waitCounter >= waitTime)
-            {
-                waiting = false;
-                
-            }
+            Debug.Log("Attack");
+            animator?.SetBool("Attacking", true);
+            waiting = true;
+            waitCounter = 0f;
         }
         else
         {
-            target = (Transform)GetData(whoToAttack);
-            if(target == null ){
-                return BehaviorTree.NodeState.FAILURE;
-            }
-            takeDamage = target.transform.GetComponent<TaskDamage>();
-            if (takeDamage.TakeHit(damage, target))
-            {
-                Debug.Log("Attack");
-                animator?.SetBool("Attacking", true);
-                waiting = true;
-                waitCounter = 0f;
-            }
-            else
-            {
-                animator?.SetBool("Attacking", false);
-                ClearData(whoToAttack);
-            }
+            animator?.SetBool("Attacking", false);
+            ClearData(whoToAttack);
         }
         return BehaviorTree.NodeState.SUCCESS;
-        
-       
     }
 }
