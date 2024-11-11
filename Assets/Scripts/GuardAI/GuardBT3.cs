@@ -6,7 +6,7 @@ public class GuardBT3 : Tree
     public UnityEngine.Transform[] waypoints;
 
     public float speed = 2f;
-    public static float fovRange = 15f;
+    public static float fovRange = 7.5f;
     public static float attackRange = 1f;
 
     protected override Node SetupTree()

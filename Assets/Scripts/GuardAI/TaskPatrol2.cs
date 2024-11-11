@@ -23,6 +23,7 @@ public class TaskPatrol2 : Node
         _animator = transform.GetComponent<Animator>();
         _waypoints = waypoints;
         _speed = speed;
+        _animator.SetBool("Walking", true);
     }
 
     public override NodeState Evaluate()
