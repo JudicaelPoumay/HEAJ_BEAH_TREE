@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 using BehaviorTree;
+using UnityEngine.AI;
 
 public class TaskPatrol2 : Node
 {
@@ -17,12 +18,15 @@ public class TaskPatrol2 : Node
     private float _waitCounter = 0f;
     private bool _waiting = false;
 
-    public TaskPatrol2(Transform transform, Transform[] waypoints, float speed)
+    private NavMeshAgent _agent;
+
+    public TaskPatrol2(Transform transform, Transform[] waypoints, float speed, NavMeshAgent agent)
     {
         _transform = transform;
         _animator = transform.GetComponent<Animator>();
         _waypoints = waypoints;
         _speed = speed;
+        _agent = agent;
         _animator.SetBool("Walking", true);
     }
 
@@ -34,25 +38,30 @@ public class TaskPatrol2 : Node
             if (_waitCounter >= _waitTime)
             {
                 _waiting = false;
+                _animator.SetBool("Attacking", false);
                 _animator.SetBool("Walking", true);
             }
         }
         else
         {
             Transform wp = _waypoints[_currentWaypointIndex];
-            if (Vector3.Distance(_transform.position, wp.position) < 0.01f)
+            if (Vector3.Distance(_transform.position, wp.position) < 1f)
             {
                 _transform.position = wp.position;
                 _waitCounter = 0f;
                 _waiting = true;
-
+                
                 _currentWaypointIndex = (_currentWaypointIndex + 1) % _waypoints.Length;
+
+                _animator.SetBool("Attacking", false);
                 _animator.SetBool("Walking", false);
             }
             else
             {
-                _transform.position = Vector3.MoveTowards(_transform.position, wp.position, _speed * Time.deltaTime);
-                _transform.LookAt(wp.position);
+                _agent.SetDestination(wp.position);
+                _animator.SetBool("Attacking", false);
+                _animator.SetBool("Walking", true);
+
             }
         }
 
@@ -60,5 +69,9 @@ public class TaskPatrol2 : Node
         state = NodeState.RUNNING;
         return state;
     }
+	public override void Reset()
+	{
+        _currentWaypointIndex = 0;
+	}
 
 }

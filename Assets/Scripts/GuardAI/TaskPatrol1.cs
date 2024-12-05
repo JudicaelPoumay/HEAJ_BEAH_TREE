@@ -35,5 +35,9 @@ public class TaskPatrol1 : Node
         state = NodeState.RUNNING;
         return state;
     }
+	public override void Reset()
+	{
+        _currentWaypointIndex = 0;
+	}
 
 }

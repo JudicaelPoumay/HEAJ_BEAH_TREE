@@ -1,7 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
+using UnityEngine.AI;
 using BehaviorTree;
 
 public class TaskAttack : Node
@@ -22,11 +22,9 @@ public class TaskAttack : Node
     public override NodeState Evaluate()
     {
         Transform target = (Transform)GetData("target");
-        if (target != _lastTarget)
-        {
-            _enemyManager = target.GetComponent<EnemyManager>();
-            _lastTarget = target;
-        }
+        if(target == null) return NodeState.FAILURE;
+        //Debug.Log(target);
+        _enemyManager = target.GetComponent<EnemyManager>();
 
         _attackCounter += Time.deltaTime;
         if (_attackCounter >= _attackTime)

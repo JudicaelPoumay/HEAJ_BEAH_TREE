@@ -7,7 +7,7 @@ using UnityEngine;
 public class EnemyManager : MonoBehaviour
 {    
     
-    public static int healthpoints = 60; 
+    public int healthpoints = 35; 
 
     public bool TakeHit()
     {        
@@ -17,7 +17,7 @@ public class EnemyManager : MonoBehaviour
         return isDead;
     }
 
-    private void _Die()
+    public void _Die()
     {
         Destroy(gameObject);
     }

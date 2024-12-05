@@ -20,13 +20,14 @@ public class CheckEnemyInAttackRange : Node
     public override NodeState Evaluate()
     {
         object t = GetData("target");
-        if (t == null)
+        Transform target = (Transform)t;
+        if (target == null)
         {
+            //Debug.Log("failure");
             state = NodeState.FAILURE;
             return state;
         }
 
-        Transform target = (Transform)t;
         if (Vector3.Distance(_transform.position, target.position) <= _attackRange)
         {
             _animator.SetBool("Attacking", true);

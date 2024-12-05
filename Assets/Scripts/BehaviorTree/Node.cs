@@ -1,9 +1,10 @@
 using System.Collections;
 using System.Collections.Generic;
+using UnityEngine;
 
 namespace BehaviorTree
 {
-    public enum NodeState
+    public enum NodeState 
     {
         RUNNING,
         SUCCESS,
@@ -14,7 +15,7 @@ namespace BehaviorTree
     {
         protected NodeState state;
 
-        public Node parent;
+        protected Node parent;
         protected List<Node> children = new List<Node>();
 
         private Dictionary<string, object> _dataContext = new Dictionary<string, object>();
@@ -23,60 +24,73 @@ namespace BehaviorTree
         {
             parent = null;
         }
+
         public Node(List<Node> children)
         {
             foreach (Node child in children)
-                _Attach(child);
+                _attach(child);
         }
 
-        private void _Attach(Node node)
+        private void _attach(Node node)
         {
             node.parent = this;
             children.Add(node);
         }
 
         public virtual NodeState Evaluate() => NodeState.FAILURE;
+        
+        public virtual void Reset() {}
 
         public void SetData(string key, object value)
         {
-            _dataContext[key] = value;
+            Node prev = parent;
+            Node curr = parent;
+            while(curr != null)
+			{
+				prev = curr;
+				curr = curr.parent;
+			}	
+            prev._dataContext[key] = value;
         }
 
         public object GetData(string key)
         {
             object value = null;
-            if (_dataContext.TryGetValue(key, out value))
+            if(_dataContext.TryGetValue(key, out value))
                 return value;
 
             Node node = parent;
-            while (node != null)
+            while(node != null)
             {
                 value = node.GetData(key);
-                if (value != null)
+                if(value != null)
                     return value;
                 node = node.parent;
             }
+
             return null;
         }
 
+
+
         public bool ClearData(string key)
         {
-            if (_dataContext.ContainsKey(key))
+            if(_dataContext.ContainsKey(key))
             {
                 _dataContext.Remove(key);
                 return true;
             }
 
             Node node = parent;
-            while (node != null)
+            while(node != null)
             {
                 bool cleared = node.ClearData(key);
-                if (cleared)
+                if(cleared)
                     return true;
                 node = node.parent;
             }
+
             return false;
         }
     }
-
 }

@@ -1,38 +1,39 @@
+using System.Collections;
 using System.Collections.Generic;
+using UnityEngine;
 
 namespace BehaviorTree
 {
-    public class Sequence : Node
-    {
-        public Sequence() : base() { }
-        public Sequence(List<Node> children) : base(children) { }
+	public class Sequence : Node
+	{
+        public Sequence() : base() {}
+        public Sequence(List<Node> children) : base(children) {}
 
-        public override NodeState Evaluate()
-        {
-            bool anyChildIsRunning = false;
-
-            foreach (Node node in children)
-            {
-                switch (node.Evaluate())
-                {
+		public override NodeState Evaluate()
+		{
+			foreach(Node child in children)
+			{
+				switch(child.Evaluate())
+				{
                     case NodeState.FAILURE:
-                        state = NodeState.FAILURE;
-                        return state;
+						return NodeState.FAILURE;
                     case NodeState.SUCCESS:
                         continue;
                     case NodeState.RUNNING:
-                        anyChildIsRunning = true;
-                        continue;
+						return NodeState.RUNNING;
                     default:
-                        state = NodeState.SUCCESS;
-                        return state;
-                }
-            }
+                        continue;
+				}
+			}
 
-            state = anyChildIsRunning ? NodeState.RUNNING : NodeState.SUCCESS;
-            return state;
-        }
+			_Reset();
+			return NodeState.SUCCESS;
+		}
 
-    }
-
+		public void _Reset()
+		{
+			foreach(Node child in children)
+				child.Reset();
+		}
+	}
 }

@@ -6,17 +6,18 @@ using BehaviorTree;
 
 public class CheckEnemyInFOVRange : Node
 {
-    private static int _enemyLayerMask = 1 << LayerMask.NameToLayer("Enemy");
+    private int _layerMask;
 
     private Transform _transform;
     private Animator _animator;
     private float _fovRange;
 
-    public CheckEnemyInFOVRange(Transform transform, float fovRange)
+    public CheckEnemyInFOVRange(Transform transform, float fovRange, string layerName)
     {
         _transform = transform;
         _animator = transform.GetComponent<Animator>();
         _fovRange = fovRange;
+        _layerMask = 1 << LayerMask.NameToLayer(layerName);
     }
 
     public override NodeState Evaluate()
@@ -25,12 +26,14 @@ public class CheckEnemyInFOVRange : Node
         if (t == null)
         {
             Collider[] colliders = Physics.OverlapSphere(
-                _transform.position, _fovRange, _enemyLayerMask);
+                _transform.position, _fovRange, _layerMask);
 
             if (colliders.Length > 0)
             {
-                parent.parent.SetData("target", colliders[0].transform);
-                _animator.SetBool("Walking", true);
+                SetData("target", colliders[0].transform);
+				Debug.Log(""+_layerMask+colliders[0].transform);
+                if(_animator)
+                    _animator.SetBool("Walking", true);
                 state = NodeState.SUCCESS;
                 return state;
             }
